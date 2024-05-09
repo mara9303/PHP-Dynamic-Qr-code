@@ -130,3 +130,42 @@ function base_url() {
         );
     }
 }
+
+function current_url() {
+	return sprintf(
+		"%s://%s%s",
+		isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http',
+		$_SERVER['SERVER_NAME'],
+		$_SERVER['REQUEST_URI']
+	);
+}
+
+function parse_web_card_object($data) {
+	$response = [];
+	foreach($data as $key => $value){
+		$response[$key] = $value ?? "";
+	}
+	return $response;
+}
+
+function read_key_array($data, $key, $default) {
+	return array_key_exists($key, $data) && !empty($data[$key]) ? $data[$key] : $default;
+}
+
+function get_logo($size) {
+	//$base_path = LOGOS_PATH;
+	$logo = match (true){
+		$size == 100 => 'prodex-100.png',
+		$size == 200 => 'prodex-200.png',
+		$size == 300 => 'prodex-300.png',
+		$size == 400 => 'prodex-400.png',
+		$size == 500 => 'prodex-500.png',
+		$size == 600 => 'prodex-600.png',
+		$size == 700 => 'prodex-700.png',
+		$size == 800 => 'prodex-800.png',
+		$size == 900 => 'prodex-900.png',
+		$size == 1000 => 'prodex-1000.png',
+		default => 'prodex-500.png'
+	};
+	return LOGOS_PATH.$logo;
+}

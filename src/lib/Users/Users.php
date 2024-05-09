@@ -33,7 +33,8 @@ class Users
 
     public function getAllUsers() {
         $db = getDbInstance();
-        return $db->get(DATABASE_PREFIX.'users');
+        
+        return $db->get('users');
     }
 
     public function getUser($id) {

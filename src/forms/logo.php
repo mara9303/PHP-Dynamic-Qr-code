@@ -1,1 +1,1 @@
-<!-- code for logo -->
+<input type="file" name="optionlogo" id="logoQr">

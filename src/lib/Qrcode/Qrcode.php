@@ -15,6 +15,9 @@ class Qrcode {
         } else if($type === "dynamic") {
             $this->table = "dynamic_qrcodes";
             $this->redirect_url = "dynamic_qrcodes.php";
+        } else if($type === "web_card") {
+            $this->table = "web_card_qrcodes";
+            $this->redirect_url = "web_card_qrcodes.php";
         } else {
             $this->redirect_url = "index.php";
             $this->failure("Type not allowed");
@@ -46,10 +49,10 @@ class Qrcode {
      * return array of values
      */
     private function setOptions($input_data) {
-        $errorCorrectionLevel = 'L';
+        $errorCorrectionLevel = QR_LEVEL;
 
-        if (isset($input_data['level']) && in_array($input_data['level'], array('L','M','Q','H')))
-            $errorCorrectionLevel = $input_data['level'];
+        /*if (isset($input_data['level']) && in_array($input_data['level'], array('L','M','Q','H')))
+            $errorCorrectionLevel = $input_data['level'];*/
       
         $size = 100;
         if (isset($input_data['size']))
@@ -59,14 +62,13 @@ class Qrcode {
         $foreground = substr($input_data['foreground'], 1);
         $background = substr($input_data['background'], 1);
 
-        //$logo = $_POST['optionlogo'];
-           
+        $logo = get_logo($size);
         return array(
             "errorCorrectionLevel" => $errorCorrectionLevel,
             "size" => $size,
             "foreground" => $foreground,
             "background" => $background,
-            //"optionlogo" => $logo,
+            "optionlogo" => $logo,
         );
     }
     
@@ -102,7 +104,7 @@ class Qrcode {
             }
             
             // If you want you can customi<e qr code with logo
-            //$this->addLogo($data_to_db['qrcode'], $options['optionlogo']);
+            $this->addLogo($data_to_db['qrcode'], $options['optionlogo']);
               
             $db = getDbInstance();
             $last_id = $db->insert($this->table, $data_to_db);
@@ -165,6 +167,7 @@ class Qrcode {
         
         try{
             unlink(SAVED_QRCODE_DIRECTORY.$qrcode["filename"].'.'.$qrcode["format"]);
+            unlink(SAVED_QRCODE_DIRECTORY_LOGO.$qrcode["filename"].'.'.$qrcode["format"]);
         }
         catch(Exception $e){
             $this->failure($e->getMessage());
@@ -185,26 +188,55 @@ class Qrcode {
         {
             if($logo != 'none')
             {
-                $logo = imagecreatefrompng($_SERVER['HTTP_HOST'].'/admin'.$logo);
-                $QR = imagecreatefrompng(BASE_PATH.$src);
-            
-	            $QR_width = imagesx($QR);
+                $logo = imagecreatefrompng($logo);
+                $QR = imagecreatefrompng(SAVED_QRCODE_FOLDER.$src);
+
+                $QR_width = imagesx($QR);
 	            $QR_height = imagesy($QR);
 	
 	            $logo_width = imagesx($logo);
 	            $logo_height = imagesy($logo);
 	
 	            // Scale logo to fit in the QR Code
-	            $logo_qr_width = $QR_width/3;
+	            $logo_qr_width = (int)$QR_width/1.8;
 	            $scale = $logo_width/$logo_qr_width;
-	            $logo_qr_height = $logo_height/$scale;
+	            $logo_qr_height = (int)$logo_height/$scale;
 	            
 	            // You can try also with imagecopymerge() with same arguments
-	            imagecopyresampled($QR, $logo, $QR_width/3, $QR_height/3, 0, 0, $logo_qr_width, $logo_qr_height, $logo_width, $logo_height);
+	            imagecopyresampled($QR, $logo, (int)($QR_width/4.5), (int)($QR_height/2.4), 0, 0, $logo_qr_width, $logo_qr_height, $logo_width, $logo_height);
 	    
-	            //$output = Set directory for saving image;
+            
+	            /*$QR_width = imagesx($QR);
+	            $QR_height = imagesy($QR);
+                $new_scale_logo = (int)($QR_width / $QR_height);
+                $QR_size = (($QR_width * 2) * $new_scale_logo);
+
+                $newLogo = imagescale($logo, (int)($QR_width / 3));
+	
+	            $logo_width = imagesx($newLogo);
+	            $logo_height = imagesy($newLogo);
+	
+	            // Scale logo to fit in the QR Code
+	            //$logo_qr_width = (int)(($QR_width - 2)/3);
+                $logo_qr_width = $QR_width/4;
+                //$logo_qr_width = (int)(($logo_width - 2) * $new_scale_logo);
+	            $scale = $logo_width/$logo_qr_width;
+	            //$logo_qr_height = (int)(($logo_height-2)/$scale);
+                $logo_qr_height = $logo_height/$scale;*/
+                //$logo_qr_height = (int)(($logo_height-2) * $new_scale_logo);
+	            /*echo json_encode(["logo_width" => $logo_width, "logo_qr_width" => $logo_qr_width, "scale" => $scale,
+                    "logo_qr_height" => $logo_qr_height]);die;*/
+	            // You can try also with imagecopymerge() with same arguments
+                //echo var_dump([$QR, $logo, (int)($QR_width/3), (int)($QR_height/3), 0, 0, $logo_qr_width, $logo_qr_height, $logo_width, $logo_height]);die;
+	            //imagecopyresampled($QR, $logo, (int)($QR_width/3), (int)($QR_height/2.5), 0, 0, $logo_qr_width, $logo_qr_height, $logo_width, $logo_height);
+                //imagecopyresampled($QR, $logo, (($QR_size - $logo_qr_width) / 2), (($QR_size - $logo_qr_height) / 2), 0, 0, $logo_qr_width, $logo_qr_height, $logo_width, $logo_height);
+                $dirQrLogo = SAVED_QRCODE_DIRECTORY."logo";
+                if(!is_dir($dirQrLogo)){
+                    mkdir($dirQrLogo);
+                }
+	            $output = "$dirQrLogo/".$src;
 	            header('Content-Type: image/png'); 
-	            imagepng($QR /*, $output*/); 
+	            imagepng($QR , $output); 
                 imagedestroy($QR);
             }
         }

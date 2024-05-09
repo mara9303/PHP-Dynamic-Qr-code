@@ -20,9 +20,10 @@ if(is_string(Getenv('TYPE')) && Getenv('TYPE') == "docker") {
     define('DATABASE_PORT', "3306");
     define('DATABASE_NAME', "qrcode");
     define('DATABASE_USER', "root");
-    define('DATABASE_PASSWORD', "root");
+    define('DATABASE_PASSWORD', "");
     define('DATABASE_PREFIX', "qr_");
     define('DATABASE_CHARSET', "utf8");
+    define('BASE_URL', "http://localhost/PHP-Dynamic-Qr-code/src");
 }
 /*
 |--------------------------------------------------------------------------

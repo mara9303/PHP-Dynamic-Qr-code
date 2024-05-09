@@ -21,7 +21,7 @@ class vCard
     public function __construct()
     {
         $this->sData = 'BEGIN:VCARD'."\n";
-        $this->sData .= 'VERSION:4.0'."\n";
+        $this->sData .= 'VERSION:3.0'."\n";
     }
 
     /**
@@ -33,7 +33,8 @@ class vCard
      */
     public function name($sName)
     {
-        $this->sData .= 'N:'.$sName."\n";
+        $full_name = explode(" ", $sName);
+        $this->sData .= 'N:'.(isset($full_name[0]) ? $full_name[0] : "").";".(isset($full_name[1]) ? $full_name[1] : "").";".(isset($full_name[2]) ? $full_name[2] : "").";;\nFN:$sName\n";
         return $this;
     }
 
@@ -43,10 +44,10 @@ class vCard
      *
      * @return self
      */
-    public function address($sAddress, $sCity, $sPostcode, $sState)
+    public function address($sAddress, $sCity, $sPostcode, $sState, $sCountry)
     {
-        $this->sData .= 'ADR:;;'.$sAddress.';';
-        $this->sData .= $sCity.';'.$sPostcode.';'.$sState."\n";
+        $this->sData .= 'ADR;TYPE=WORK;PREF:;;'.$sAddress.';';
+        $this->sData .= $sCity.';'.$sState.';'.$sPostcode.";$sCountry\n";
         return $this;
     }
 
@@ -68,7 +69,7 @@ class vCard
      */
     public function email($sMail)
     {
-        $this->sData .= 'EMAIL;TYPE=PREF,INTERNET:'.$sMail."\n";
+        $this->sData .= 'EMAIL:'.$sMail."\n";
         return $this;
     }
 
@@ -79,7 +80,7 @@ class vCard
      */
     public function workPhone($sVal)
     {
-        $this->sData .= 'TEL;;TYPE=work:'.$sVal."\n";
+        $this->sData .= 'TEL;TYPE=WORK,VOICE:'.$sVal."\n";
         return $this;
     }
 
@@ -90,7 +91,7 @@ class vCard
      */
     public function homePhone($sVal)
     {
-        $this->sData .= 'TEL;;TYPE=home:'.$sVal."\n";
+        $this->sData .= 'TEL;TYPE=HOME:'.$sVal."\n";
         return $this;
     }
     
@@ -101,7 +102,7 @@ class vCard
      */
     public function cellPhone($sVal)
     {
-        $this->sData .= 'TEL:'.$sVal."\n";
+        $this->sData .= 'TEL;TYPE=WORK,VOICE:'.$sVal."\n";
         return $this;
     }
 
@@ -112,8 +113,10 @@ class vCard
      */
     public function url($sUrl)
     {
-        $sUrl = (substr($sUrl, 0, 4) != 'http') ? 'http://'.$sUrl : $sUrl;
-        $this->sData .= 'URL:'.$sUrl."\n";
+        if(!empty($sUrl)){
+            $sUrl = (substr($sUrl, 0, 4) != 'http') ? 'http://'.$sUrl : $sUrl;
+            $this->sData .= 'URL:'.$sUrl."\n";
+        }
         return $this;
     }
 
@@ -142,18 +145,27 @@ class vCard
     public function photo($sImgUrl)
     {
         if($sImgUrl != NULL){
-        
-        $bIsImgExt = strtolower(substr(strrchr($sImgUrl, '.'), 1)); // Get the file extension.
 
-        if ($bIsImgExt == 'jpeg' || $bIsImgExt == 'jpg' || $bIsImgExt == 'png' || $bIsImgExt == 'gif') {
-            $sExt = strtoupper($bIsImgExt);
-        } else {
-            throw new InvalidArgumentException('Invalid format Image!');
-        }
+            $bIsImgExt = strtolower(substr(strrchr($sImgUrl, '.'), 1)); // Get the file extension.
 
-        $this->sData .= 'PHOTO;VALUE=URL;TYPE='.$sExt.':'.$sImgUrl."\n";
+            if ($bIsImgExt == 'jpeg' || $bIsImgExt == 'jpg' || $bIsImgExt == 'png' || $bIsImgExt == 'gif') {
+                $sExt = strtoupper($bIsImgExt);
+            } else {
+                throw new InvalidArgumentException('Invalid format Image!');
+            }
 
-        return $this;
+            /*$img = file_get_contents($sImgUrl); 
+            $base64 = base64_encode($img);
+            $f = finfo_open();
+
+            $mime_type = finfo_buffer($f, $img, FILEINFO_MIME_TYPE);*/
+
+            //$this->sData .= "PHOTO;data:$mime_type;base64,$base64\n";*/
+
+            $this->sData .= 'PHOTO;VALUE=URI;TYPE='.strtoupper($sExt).':'.$sImgUrl."\n";
+
+
+            return $this;
         }
     }
 
@@ -166,7 +178,7 @@ class vCard
      */
     public function role($sRole)
     {
-        $this->sData .= 'ROLE:'.$sRole."\n";
+        $this->sData .= 'TITLE:'.$sRole."\n";
         return $this;
     }
 
@@ -197,6 +209,19 @@ class vCard
     public function note($sText)
     {
         $this->sData .= 'NOTE:'.$sText."\n";
+        return $this;
+    }
+
+    /**
+     * The supplemental information or a comment that is associated with the vCard.
+     *
+     * @param string $sDate
+     *
+     * @return self
+     */
+    public function revision($sDate)
+    {
+        $this->sData .= 'REV:'.date("c", strtotime($sDate))."\n";
         return $this;
     }
 

@@ -50,7 +50,7 @@
                 <td><?php echo htmlspecialchars($row['identifier']); ?></td>
                 <td><?php echo htmlspecialchars($row['link']); ?></td>
                 <td>
-                    <?php echo '<img src="'.SAVED_QRCODE_FOLDER.htmlspecialchars($row['qrcode']).'" width="100" height="100">'; ?>
+                    <?php echo '<img src="'.SAVED_QRCODE_LOGO_FOLDER.htmlspecialchars($row['qrcode']).'" width="100" height="100">'; ?>
                 </td>
                 <td><?php echo htmlspecialchars($row['scan']); ?></td>
                 <td><?php echo htmlspecialchars($row['state']); ?></td>
@@ -68,7 +68,7 @@
                     ><i class="fas fa-trash"></i></a>
                     
                     <!-- DOWNLOAD -->
-                    <a href="<?php echo SAVED_QRCODE_FOLDER.htmlspecialchars($row['qrcode']); ?>" class="btn btn-primary" download><i class="fa fa-download"></i></a>
+                    <a href="<?php echo SAVED_QRCODE_LOGO_FOLDER.htmlspecialchars($row['qrcode']); ?>" class="btn btn-primary" download><i class="fa fa-download"></i></a>
                 </td>
             </tr>
             <?php endforeach; ?>

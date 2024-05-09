@@ -1,5 +1,6 @@
 <fieldset>
-    <div class="col-sm-12 mb-2">
+    <?php include BASE_PATH . '/forms/qrcode_options.php'; ?>
+    <!--<div class="col-sm-12 mb-2">
         <div class="row">
             <div class="col-6 col-md-3">
                 <label for="foreground">Foreground *</label>
@@ -26,9 +27,6 @@
             <div class="col-6 col-md-3">
                 <label for="level">Precision</label>
                 <select name="level" class="form-control">
-                    <option value="L">L - Smallest</option>
-                    <option value="M">M - Medium</option>
-                    <option value="Q">Q - High</option>
                     <option value="H">H - Best</option>
                 </select>
             </div>
@@ -36,11 +34,6 @@
             <div class="col-6 col-md-3">
                 <label for="size">Size (px)</label>
                 <select name="size" class="form-control">
-                    <option value="100">100</option>
-                    <option value="200">200</option>
-                    <option value="300">300</option>
-                    <option value="400">400</option>
-                    <option value="500">500</option>
                     <option value="600">600</option>
                     <option value="700">700</option>
                     <option value="800">800</option>
@@ -49,14 +42,14 @@
                 </select>
             </div>
         </div>
-    </div>
+    </div>-->
 
 <!-- Its use is not recommended. Read the documentation
     <div class="form-group">
         <label for="logo">Logo</label>
-        <?php //include 'logo.php' ?>
-    </div>
-    -->
+        <?php include 'logo.php' ?>
+    </div>-->
+
     
     <div class="col-sm-4">
         <div class="form-group">
