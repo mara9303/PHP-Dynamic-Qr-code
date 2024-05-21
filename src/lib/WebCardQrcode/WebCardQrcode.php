@@ -70,6 +70,10 @@ class WebCardQrcode {
         $data_to_db['format'] = $input_data['format'];
         $data_to_db['identifier'] = randomString(rand(5,8));
         $data_to_db['qrcode'] = $data_to_db['filename'].'.'.$data_to_db['format'];
+        $data_to_db['logo_company'] = isset($_POST['logo']) && !empty($_POST['logo']) ? $_POST['logo'] : '';
+
+        //Seleted logo
+        $input_data['logo'] = $_POST['logo'];
 
         $data_to_qrcode = READ_WEB_CARD_PATH.$data_to_db['identifier'];
         

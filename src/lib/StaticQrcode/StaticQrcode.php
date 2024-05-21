@@ -82,7 +82,7 @@ class StaticQrcode {
     public function phoneQrcode($country_code, $phone_number)
     {
         if($phone_number != NULL){
-            $this->sData = 'TEL:'.$country_code.$phone_number;  
+            $this->sData = 'TEL:+'.$country_code.$phone_number;  
             $this->sContent = '<strong>Phone number:</strong> '.$country_code.$phone_number;
 
             $this->addQrcode("phone");
@@ -100,7 +100,7 @@ class StaticQrcode {
     public function smsQrcode($country_code, $phone_number, $message)
     {
         if($phone_number != NULL && $message != NULL){
-            $this->sData = 'SMSTO:'.$country_code.$phone_number.':'.$message;  
+            $this->sData = 'SMSTO:+'.$country_code.$phone_number.':'.$message;  
             $this->sContent = '<strong>Phone number:</strong> '.$country_code.$phone_number.'<br>'.'<strong>Message:</strong> '.$message;
 
             $this->addQrcode("sms");
@@ -353,6 +353,7 @@ class StaticQrcode {
         $data_to_db['filename'] = htmlspecialchars($_POST['filename'], ENT_QUOTES, 'UTF-8');
         $data_to_db['created_at'] = date('Y-m-d H:i:s');
         $data_to_db['type'] = $type;
+        $data_to_db['logo_company'] = isset($_POST['logo']) && !empty($_POST['logo']) ? $_POST['logo'] : '';
         $data_to_db['format'] = $_POST['format'];
         $data_to_db['qrcode'] = $data_to_db['filename'].'.'.$data_to_db['format'];
         $data_to_db['content'] = htmlspecialchars($this->sContent, ENT_QUOTES, 'UTF-8');
@@ -365,7 +366,9 @@ class StaticQrcode {
 
         $input_data["foreground"] = $_POST['foreground'];
         $input_data["background"] = $_POST['background'];
-
+        //Seleted logo
+        $input_data['logo'] = $_POST['logo'];
+        
         $data_to_qrcode = urlencode($this->sData);
 
         $this->qrcode_instance->addQrcode($input_data, $data_to_db, $data_to_qrcode);

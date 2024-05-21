@@ -28,7 +28,7 @@
             <?php foreach ($rows as $row): ?>
             <tr>
                 <td><input type="checkbox" name="action[]" value="<?=$row['id']?>" onchange="updateBulkActionVisibility()"></td>
-                <td><?php echo $row['id']; ?></td>
+                <td><?= $row['id']; ?></td>
                 <td>
                     <?php
                     if(!isset($row['id_owner']))
@@ -44,27 +44,27 @@
                     }
                     ?>
                 </td>
-                <td><?php echo htmlspecialchars($row['filename']); ?></td>
-                <td><?php echo htmlspecialchars($row['type']); ?></td>
-                <td><?php echo $row['content']; ?></td>
+                <td><?= htmlspecialchars($row['filename']); ?></td>
+                <td><?= htmlspecialchars($row['type']); ?></td>
+                <td><?= $row['content']; ?></td>
                 <td>
-                    <?php echo '<img src="'.SAVED_QRCODE_LOGO_FOLDER.htmlspecialchars($row['qrcode']).'" width="100" height="100">'; ?>
+                    <?= '<img src="'.(!empty(read_key_array($row, 'logo_company', '')) ? SAVED_QRCODE_LOGO_FOLDER : SAVED_QRCODE_FOLDER).htmlspecialchars($row['qrcode']).'" width="100" height="100">'; ?>
                 </td>
                 <td>
                     
                     <!-- EDIT -->
-                    <a href="static_qrcode.php?edit=true&id=<?php echo $row['id']; ?>" class="btn btn-primary"><i class="fas fa-edit"></i></a>
+                    <a href="static_qrcode.php?edit=true&id=<?= $row['id']; ?>" class="btn btn-primary"><i class="fas fa-edit"></i></a>
                     
                     <!-- DELETE -->
                     <a
                             class="btn btn-danger delete_btn"
                             data-toggle="modal"
                             data-target="#delete-modal"
-                            data-del_id="<?php echo $row["id"];?>"
+                            data-del_id="<?= $row["id"];?>"
                     ><i class="fas fa-trash"></i></a>
 
                     <!-- DOWNLOAD -->
-                    <a href="<?php echo SAVED_QRCODE_LOGO_FOLDER.htmlspecialchars($row['qrcode']); ?>" class="btn btn-primary" download><i class="fa fa-download"></i></a>
+                    <a href="<?= (!empty(read_key_array($row, 'logo_company', '')) ? SAVED_QRCODE_LOGO_FOLDER : SAVED_QRCODE_FOLDER).htmlspecialchars($row['qrcode']); ?>" class="btn btn-primary" download><i class="fa fa-download"></i></a>
                 </td>
             </tr>
             <?php endforeach; ?>
@@ -73,7 +73,7 @@
    </div><!-- /.Card body -->
    
    <div class="card-footer clearfix">
-       <?php echo paginationLinks($page, $total_pages, 'static_qrcodes.php'); ?>
+       <?= paginationLinks($page, $total_pages, 'static_qrcodes.php'); ?>
        </div><!-- /.Card footer -->
        
         </div><!-- /.Card -->

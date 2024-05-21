@@ -7,7 +7,7 @@ require_once BASE_PATH . '/lib/WebCardQrcode/WebCardQrcode.php';
 $db = getDbInstance();
 $web_card_qrcode_instance = new WebCardQrcode();
 
-$select = array('id', 'id_owner', 'filename', 'identifier', 'qrcode', 'created_at', 'updated_at');
+$select = array('id', 'id_owner', 'filename', 'identifier', 'qrcode', 'created_at', 'updated_at', 'logo_company');
 $search_fields = array('filename', 'identifier');
 require_once BASE_PATH . '/includes/search_order.php';
 $page = filter_input(INPUT_GET, 'page', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? 1;
@@ -19,6 +19,7 @@ if($_SESSION['type'] !==  'super') {
 }
 
 $rows = $db->arraybuilder()->paginate('web_card_qrcodes', $page, $select);
+
 $total_pages = $db->totalPages;
 ?>
 

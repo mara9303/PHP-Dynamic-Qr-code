@@ -7,7 +7,7 @@ require_once BASE_PATH . '/lib/StaticQrcode/StaticQrcode.php';
 $db = getDbInstance();
 $static_qrcode = new StaticQrcode();
 
-$select = array('id', 'id_owner', 'filename', 'type', 'content', 'qrcode', 'created_at', 'updated_at');
+$select = array('id', 'id_owner', 'filename', 'type', 'content', 'qrcode', 'created_at', 'updated_at', 'logo_company');
 $search_fields = array('filename', 'type', 'content');
 require_once BASE_PATH . '/includes/search_order.php';
 $page = filter_input(INPUT_GET, 'page', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? 1;

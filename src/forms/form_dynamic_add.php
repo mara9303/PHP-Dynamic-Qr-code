@@ -65,55 +65,5 @@
             <p>It will be automatically generated</p>
         </div>
     </div>
-    
-<div class="col-sm-12 mb-2">
-  <div class="row">    
-    <div class="col-sm-4">
-        <div class="form-group">
-            <label for="filename">Filename *</label>
-            <input type="text" name="filename" value="" placeholder="My first Qrcode" class="form-control error" required="required" id="filename">
-          
-        </div>
-    </div>
-    
-    <div class="col-6 col-md-1">
-                <label for="format">Format *</label>
-                <select name="format" class="form-control" required="required">
-                    <option value="png" selected>PNG</option>
-                    <option value="gif">GIF</option>
-                    <option value="jpeg">JPEG</option>
-                    <option value="jpg">JPG</option>
-                    <option value="svg">SVG</option>
-                    <option value="eps">EPS</option>
-                </select>
-    </div>
-  </div>
-</div>
 
-    <?php if($_SESSION['type'] ===  'super') { ?>
-    <div class="col-sm-12 mb-2">
-        <div class="row">
-            <div class="col-sm-4">
-                <div class="form-group">
-                    <label for="id_owner">Owner *</label>
-                    <select name="id_owner" class="form-control">
-                        <option value="" selected>All</option>
-                        <?php
-
-                        require_once BASE_PATH . '/lib/Users/Users.php';
-                        $users_instance = new Users();
-                        $users = $users_instance->getAllUsers();
-
-                        foreach ($users as $user) {
-                        ?>
-                        <option value="<?php echo $user["id"];?>"><?php echo $user["username"];?></option>
-                        <?php } ?>
-                    </select>
-                </div>
-            </div>
-        </div>
-    </div>
-    <?php } else { ?>
-        <input type="hidden" name="id_owner" value="<?php echo $_SESSION["user_id"];?>"/>
-    <?php } ?>
 </fieldset>

@@ -47,7 +47,7 @@
                                 <td><?= htmlspecialchars($row['filename']); ?></td>
                                 <td><?= htmlspecialchars($row['identifier']); ?></td>
                                 <td>
-                                    <?= '<img src="' . SAVED_QRCODE_LOGO_FOLDER . htmlspecialchars($row['qrcode']) . '" width="100" height="100">'; ?>
+                                    <?= '<img src="' . (!empty(read_key_array($row, 'logo_company', '')) ? SAVED_QRCODE_LOGO_FOLDER : SAVED_QRCODE_FOLDER) . htmlspecialchars($row['qrcode']) . '" width="100" height="100">'; ?>
                                 </td>
                                 <td>
 
@@ -64,7 +64,7 @@
                                     </a>
 
                                     <!-- DOWNLOAD -->
-                                    <a href="<?= SAVED_QRCODE_LOGO_FOLDER . htmlspecialchars($row['qrcode']); ?>"
+                                    <a href="<?= (!empty(read_key_array($row, 'logo_company', '')) ? SAVED_QRCODE_LOGO_FOLDER : SAVED_QRCODE_FOLDER) . htmlspecialchars($row['qrcode']); ?>"
                                         class="btn btn-primary" download>
                                         <i class="fa fa-download"></i>
                                     </a>

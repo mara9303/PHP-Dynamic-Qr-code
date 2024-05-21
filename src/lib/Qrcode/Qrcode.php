@@ -62,7 +62,8 @@ class Qrcode {
         $foreground = substr($input_data['foreground'], 1);
         $background = substr($input_data['background'], 1);
 
-        $logo = get_logo($size);
+        $logo = get_logo($input_data['logo'], $size);
+        
         return array(
             "errorCorrectionLevel" => $errorCorrectionLevel,
             "size" => $size,
@@ -104,7 +105,9 @@ class Qrcode {
             }
             
             // If you want you can customi<e qr code with logo
-            $this->addLogo($data_to_db['qrcode'], $options['optionlogo']);
+            if(!empty($options['optionlogo'])){
+                $this->addLogo($data_to_db['qrcode'], $options['optionlogo']);
+            }
               
             $db = getDbInstance();
             $last_id = $db->insert($this->table, $data_to_db);

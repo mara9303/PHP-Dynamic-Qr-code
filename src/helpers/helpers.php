@@ -152,20 +152,23 @@ function read_key_array($data, $key, $default) {
 	return array_key_exists($key, $data) && !empty($data[$key]) ? $data[$key] : $default;
 }
 
-function get_logo($size) {
-	//$base_path = LOGOS_PATH;
-	$logo = match (true){
-		$size == 100 => 'prodex-100.png',
-		$size == 200 => 'prodex-200.png',
-		$size == 300 => 'prodex-300.png',
-		$size == 400 => 'prodex-400.png',
-		$size == 500 => 'prodex-500.png',
-		$size == 600 => 'prodex-600.png',
-		$size == 700 => 'prodex-700.png',
-		$size == 800 => 'prodex-800.png',
-		$size == 900 => 'prodex-900.png',
-		$size == 1000 => 'prodex-1000.png',
-		default => 'prodex-500.png'
-	};
-	return LOGOS_PATH.$logo;
+function get_logo($company, $size) {
+	$logo = "";
+	if(isset($company) && !empty($company)){
+		$image = match (true){
+			$size == 100 => "$company-100.png",
+			$size == 200 => "$company-200.png",
+			$size == 300 => "$company-300.png",
+			$size == 400 => "$company-400.png",
+			$size == 500 => "$company-500.png",
+			$size == 600 => "$company-600.png",
+			$size == 700 => "$company-700.png",
+			$size == 800 => "$company-800.png",
+			$size == 900 => "$company-900.png",
+			$size == 1000 => "$company-1000.png",
+			default => "$company-500.png"
+		};
+		$logo = LOGOS_PATH.$image;
+	}
+	return $logo;
 }

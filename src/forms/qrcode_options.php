@@ -66,6 +66,14 @@
                 <option value="eps">EPS</option>
             </select>
         </div>
+        <div class="col-6 col-md-2">
+            <label for="logo">Logo</label>
+            <select name="logo" class="form-control">
+                <option value="">Sin logo</option>
+                <option value="prodex">PRODEX</option>
+                <option value="proplax">PROPLAX</option>
+            </select>
+        </div>
     </div>
 </div>
 

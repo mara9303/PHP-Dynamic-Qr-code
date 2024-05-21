@@ -30,7 +30,7 @@
             <?php foreach ($rows as $row): ?>
             <tr>
                 <td><input type="checkbox" name="action[]" value="<?=$row['id']?>" onchange="updateBulkActionVisibility()"></td>
-                <td><?php echo $row['id']; ?></td>
+                <td><?= $row['id']; ?></td>
                 <td>
                     <?php
                     if(!isset($row['id_owner']))
@@ -46,29 +46,29 @@
                     }
                     ?>
                 </td>
-                <td><?php echo htmlspecialchars($row['filename']); ?></td>
-                <td><?php echo htmlspecialchars($row['identifier']); ?></td>
-                <td><?php echo htmlspecialchars($row['link']); ?></td>
+                <td><?= htmlspecialchars($row['filename']); ?></td>
+                <td><?= htmlspecialchars($row['identifier']); ?></td>
+                <td><?= htmlspecialchars($row['link']); ?></td>
                 <td>
-                    <?php echo '<img src="'.SAVED_QRCODE_LOGO_FOLDER.htmlspecialchars($row['qrcode']).'" width="100" height="100">'; ?>
+                    <?= '<img src="'.(!empty(read_key_array($row, 'logo_company', '')) ? SAVED_QRCODE_LOGO_FOLDER : SAVED_QRCODE_FOLDER).htmlspecialchars($row['qrcode']).'" width="100" height="100">'; ?>
                 </td>
-                <td><?php echo htmlspecialchars($row['scan']); ?></td>
-                <td><?php echo htmlspecialchars($row['state']); ?></td>
+                <td><?= htmlspecialchars($row['scan']); ?></td>
+                <td><?= htmlspecialchars($row['state']); ?></td>
                 <td>
                     
                     <!-- EDIT -->
-                    <a href="dynamic_qrcode.php?edit=true&id=<?php echo $row['id']; ?>" class="btn btn-primary"><i class="fas fa-edit"></i></a>
+                    <a href="dynamic_qrcode.php?edit=true&id=<?= $row['id']; ?>" class="btn btn-primary"><i class="fas fa-edit"></i></a>
                     
                     <!-- DELETE -->
                     <a
                             class="btn btn-danger delete_btn"
                             data-toggle="modal"
                             data-target="#delete-modal"
-                            data-del_id="<?php echo $row["id"];?>"
+                            data-del_id="<?= $row["id"];?>"
                     ><i class="fas fa-trash"></i></a>
                     
                     <!-- DOWNLOAD -->
-                    <a href="<?php echo SAVED_QRCODE_LOGO_FOLDER.htmlspecialchars($row['qrcode']); ?>" class="btn btn-primary" download><i class="fa fa-download"></i></a>
+                    <a href="<?= (!empty(read_key_array($row, 'logo_company', '')) ? SAVED_QRCODE_LOGO_FOLDER : SAVED_QRCODE_FOLDER).htmlspecialchars($row['qrcode']); ?>" class="btn btn-primary" download><i class="fa fa-download"></i></a>
                 </td>
             </tr>
             <?php endforeach; ?>
@@ -77,7 +77,7 @@
    </div><!-- /.Card body -->
    
    <div class="card-footer clearfix">
-       <?php echo paginationLinks($page, $total_pages, 'dynamic_qrcodes.php'); ?>
+       <?= paginationLinks($page, $total_pages, 'dynamic_qrcodes.php'); ?>
        </div><!-- /.Card footer -->
        
         </div><!-- /.Card -->
