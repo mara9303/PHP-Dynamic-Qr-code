@@ -18,3 +18,5 @@
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
   <!-- Custom Styles -->
   <link rel="stylesheet" href="dist/css/custom.css">
+  <!-- Input Tel Select -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@23.1.0/build/css/intlTelInput.css">

@@ -36,15 +36,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && !isset($_POST["edit"])) {
             break;
 
         case 'phone':
-            $static_qrcode_instance->phoneQrcode($_POST['country_code'], $_POST['phone_number']);
+            $phoneCountryCode = get_country_code_from_number($_POST['phone_number'], 4);
+            $static_qrcode_instance->phoneQrcode($phoneCountryCode, str_replace($phoneCountryCode, "", $_POST['phone_number']));
             break;
 
         case 'sms':
-            $static_qrcode_instance->smsQrcode($_POST['country_code'], $_POST['phone_number'], $_POST['message']);
+            $phoneCountryCode = get_country_code_from_number($_POST['phone_number'], 4);
+            $static_qrcode_instance->smsQrcode($phoneCountryCode, str_replace($phoneCountryCode, "", $_POST['phone_number']), $_POST['message']);
             break;
 
         case 'whatsapp':
-            $static_qrcode_instance->whatsappQrcode($_POST['country_code'], $_POST['phone_number'], $_POST['message']);
+            $phoneCountryCode = get_country_code_from_number($_POST['phone_number'], 4);
+            $static_qrcode_instance->whatsappQrcode($phoneCountryCode, str_replace($phoneCountryCode, "", $_POST['phone_number']), $_POST['message']);
             break;
 
         case 'skype':
@@ -56,7 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && !isset($_POST["edit"])) {
             break;
 
         case 'vcard':
-            $static_qrcode_instance->vcardQrcode($_POST['full_name'], $_POST['nickname'], $_POST['email'], $_POST['website'], $_POST['phone'], $_POST['home_phone'], $_POST['work_phone'], $_POST['company'], $_POST['role'], $_POST['categories'], $_POST['note'], $_POST['photo'], $_POST['address'], $_POST['city'], $_POST['post_code'], $_POST['state']);
+            $static_qrcode_instance->vcardQrcode($_POST['full_name'], $_POST['nickname'], $_POST['email'], $_POST['website'], $_POST['phone_number'], $_POST['home_phone_number'], $_POST['work_phone_number'], $_POST['company'], $_POST['role'], $_POST['categories'], $_POST['note'], $_POST['photo'], $_POST['address'], $_POST['city'], $_POST['post_code'], $_POST['state'], $_POST['country']);
             break;
 
         case 'event':
@@ -148,9 +151,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && !isset($_POST["edit"])) {
         <?php include './includes/footer.php'; ?>
 
         <!-- Page script -->
+        <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@23.1.0/build/js/intlTelInput.min.js"></script>
+        <script src="dist/js/inputtel.js"></script>
         <script type="text/javascript">
             $(document).ready(function () {
-                $('#static_form').validate({
+                $('.static_form').validate({
                     rules: {
                         filename: {
                             required: true,

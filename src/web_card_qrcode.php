@@ -27,8 +27,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["edit"])) {
         isset($_POST['nickname']) &&
         isset($_POST['email']) &&
         isset($_POST['website']) &&
-        isset($_POST['phone']) && !empty($_POST['phone']) &&
-        isset($_POST['work_phone']) &&
+        isset($_POST['phone_number']) && !empty($_POST['phone_number']) &&
+        isset($_POST['work_phone_number']) &&
         isset($_POST['role']) &&
         isset($_POST['note']) &&
         isset($_POST['photo']) && 
@@ -57,8 +57,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && !isset($_POST["edit"])) {
         isset($_POST['nickname']) &&
         isset($_POST['email']) &&
         isset($_POST['website']) &&
-        isset($_POST['phone']) && !empty($_POST['phone']) &&
-        isset($_POST['work_phone']) &&
+        isset($_POST['phone_number']) && !empty($_POST['phone_number']) &&
+        isset($_POST['work_phone_number']) &&
         isset($_POST['role']) &&
         isset($_POST['note']) &&
         isset($_POST['photo']) &&
@@ -144,6 +144,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && !isset($_POST["edit"])) {
         <?php include './includes/footer.php'; ?>
 
         <!-- Page script -->
+        <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@23.1.0/build/js/intlTelInput.min.js"></script>
+        <script src="dist/js/inputtel.js"></script>
         <script type="text/javascript">
             $(document).ready(function () {
                 $('#web_card_form').validate({

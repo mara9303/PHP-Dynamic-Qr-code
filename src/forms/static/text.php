@@ -1,4 +1,4 @@
-<form class="form" action="static_qrcode.php?type=text" method="post" id="static_form" enctype="multipart/form-data">
+<form class="form static_form" action="static_qrcode.php?type=text" method="post" id="static_text_form" enctype="multipart/form-data">
     <?php include BASE_PATH . '/forms/qrcode_options.php'; ?>
     <!-- Input forms -->
     <div class="col-sm-6">

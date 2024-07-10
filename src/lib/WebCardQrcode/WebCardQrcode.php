@@ -60,8 +60,8 @@ class WebCardQrcode {
         $data_to_db['created_at'] = date('Y-m-d H:i:s');
         $data_to_db['content'] = json_encode([
             "full_name" => $_POST['full_name'], "nickname" => $_POST['nickname'], "email" => $_POST['email'], 
-            "website" => $_POST['website'], "phone" => $_POST['phone'],  
-            "work_phone" => $_POST['work_phone'], "role" => $_POST['role'], 
+            "website" => $_POST['website'], "phone" => $_POST['phone_number'],  
+            "work_phone" => $_POST['work_phone_number'], "role" => $_POST['role'], 
             "note" => $_POST['note'], "photo" => $_POST['photo'], 
             "address" => $_POST['address'], "city" => $_POST['city'], "post_code" => $_POST['post_code'], 
             "state" => $_POST['state'], "country" => $_POST['country']

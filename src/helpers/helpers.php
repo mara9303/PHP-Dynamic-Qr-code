@@ -172,3 +172,7 @@ function get_logo($company, $size) {
 	}
 	return $logo;
 }
+
+function get_country_code_from_number($number, $codeLength) {
+	return substr($number, 0, $codeLength);
+}

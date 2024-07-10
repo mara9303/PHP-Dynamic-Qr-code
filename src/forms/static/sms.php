@@ -1,22 +1,22 @@
-<form class="form" action="static_qrcode.php?type=sms" method="post" id="static_form" enctype="multipart/form-data">
+<form class="form static_form" action="static_qrcode.php?type=sms" method="post" id="static_sms_form" enctype="multipart/form-data">
     <?php include BASE_PATH.'/forms/qrcode_options.php'; ?>
 <!-- Input forms -->
 <div class="col-sm-12 mb-2">
     <div class="row">
 
-    <div class="col-6 col-md-3">
+    <!--<div class="col-6 col-md-3">
         <div class="form-group">
             <label>Country Code *</label>
             <select name="country_code" class="form-control">
-            <?php include BASE_PATH . '/forms/static/country-code.html'; ?> 
+            <?php /*include BASE_PATH . '/forms/static/country-code.html';*/ ?> 
             </select>
         </div>
-    </div>
+    </div>-->
     
     <div class="col-6 col-md-3">
         <div class="form-group">
             <label>Phone number * </label>
-            <input type="text" name="phone_number" value="" placeholder="" class="form-control">
+            <input type="text" name="inp_phone_number" value="" placeholder="" class="form-control phoneCode">
         </div>
     </div>
     </div>

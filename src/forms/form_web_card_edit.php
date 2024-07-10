@@ -49,14 +49,14 @@
             <div class="col-6 col-md-3">
                 <div class="form-group">
                     <label>Phone *</label>
-                    <input type="text" name="phone" value="<?= $edit ? $web_card_qrcode['phone'] : ''; ?>" placeholder="" class="form-control" required>
+                    <input type="text" name="phone" value="<?= $edit ? $web_card_qrcode['phone'] : ''; ?>" placeholder="" class="form-control phoneCode" required>
                 </div>
             </div>
 
             <div class="col-6 col-md-3">
                 <div class="form-group">
                     <label>Work phone</label>
-                    <input type="text" name="work_phone" value="<?= $edit ? $web_card_qrcode['work_phone'] : ''; ?>" placeholder="" class="form-control">
+                    <input type="text" name="work_phone" value="<?= $edit ? $web_card_qrcode['work_phone'] : ''; ?>" placeholder="" class="form-control workPhoneCode">
                 </div>
             </div>
 
