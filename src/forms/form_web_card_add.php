@@ -100,7 +100,7 @@
             <div class="col-6 col-md-3">
                 <div class="form-group">
                     <label>State</label>
-                    <input type="text" name="state" value="" placeholder="" class="form-control">
+                    <input type="text" name="location_state" value="" placeholder="" class="form-control">
                 </div>
             </div>
 

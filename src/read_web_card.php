@@ -1,4 +1,5 @@
 <?php
+
 include 'config/config.php';
 require_once BASE_PATH . '/lib/WebCardQrcode/ReadWebCardQrcode.php';
 
@@ -59,7 +60,7 @@ if (array_key_exists("identifier", $qrcode)) {
                                 <?php if (!empty($web_card_content["email"])) { ?>
                                     <div class="col-12 my-2">
                                         <a href="mailto:<?= read_key_array($web_card_content, "email", "") ?>?Subject=Contacto%20desde%20QR"
-                                            title="Enviar email a <?= read_key_array($web_card_content, "email", "") ?>">
+                                            title="Enviar email a <?= read_key_array($web_card_content, "email", "") ?>" class="link-opacity-50-hover text-decoration-none">
                                             <div class="row">
                                                 <div class="col-2">
                                                     <i class="fas fa-envelope fa-2x"></i>
@@ -74,7 +75,7 @@ if (array_key_exists("identifier", $qrcode)) {
                                 <?php } ?>
                                 <div class="col-12 my-2">
                                     <a href="tel:<?= read_key_array($web_card_content, "phone", "") ?>"
-                                        title="Llamar a <?= read_key_array($web_card_content, "phone", "") ?>">
+                                        title="Llamar a <?= read_key_array($web_card_content, "phone", "") ?>" class="link-opacity-50-hover text-decoration-none">
                                         <div class="row">
                                             <div class="col-2">
                                                 <i class="fas fa-mobile fa-2x"></i>
@@ -89,7 +90,7 @@ if (array_key_exists("identifier", $qrcode)) {
                                 <?php if (!empty($web_card_content["work_phone"])) { ?>
                                     <div class="col-12 my-2">
                                         <a href="tel:<?= read_key_array($web_card_content, "work_phone", "") ?>"
-                                            title="Llamar a <?= read_key_array($web_card_content, "work_phone", "") ?>">
+                                            title="Llamar a <?= read_key_array($web_card_content, "work_phone", "") ?>" class="link-opacity-50-hover text-decoration-none">
                                             <div class="row">
                                                 <div class="col-2">
                                                     <i class="fas fa-phone fa-2x"></i>
@@ -105,7 +106,7 @@ if (array_key_exists("identifier", $qrcode)) {
                                 <?php if (!empty($web_card_content["website"])) { ?>
                                     <div class="col-12 my-2">
                                         <a href="<?= read_key_array($web_card_content, "website", "") ?>"
-                                            title="<?= read_key_array($web_card_content, "website", "") ?>">
+                                            title="<?= read_key_array($web_card_content, "website", "") ?>" class="link-opacity-50-hover text-decoration-none">
                                             <div class="row">
                                                 <div class="col-2">
                                                     <i class="fas fa-globe fa-2x"></i>
@@ -122,18 +123,14 @@ if (array_key_exists("identifier", $qrcode)) {
                                     <div class="col-12 my-2">
                                         <a href="https://www.google.com/maps/search/?api=1&query=<?= urlencode(read_key_array($web_card_content, "post_code", "") . ", " . read_key_array($web_card_content, "address", "") . ", " . read_key_array($web_card_content, "city", "") . ", " . read_key_array($web_card_content, "state", "") . ", " . read_key_array($web_card_content, "country", "")) ?>"
                                             target="_blank"
-                                            title="<?= read_key_array($web_card_content, "post_code", "") ?>, <?= read_key_array($web_card_content, "address", "") ?>, <?= read_key_array($web_card_content, "city", "") ?>, <?= read_key_array($web_card_content, "state", "") ?>, <?= read_key_array($web_card_content, "country", "") ?>">
+                                            title="<?= read_key_array($web_card_content, "post_code", "") ?>, <?= read_key_array($web_card_content, "address", "") ?>, <?= read_key_array($web_card_content, "city", "") ?>, <?= read_key_array($web_card_content, "state", "") ?>, <?= read_key_array($web_card_content, "country", "") ?>"
+                                            class="link-opacity-50-hover text-decoration-none">
                                             <div class="row">
                                                 <div class="col-2">
                                                     <i class="fas fa-map-marker-alt fa-2x"></i>
                                                 </div>
                                                 <div class="col d-flex justify-content-start">
-                                                    <span
-                                                        class="text-start"><?= read_key_array($web_card_content, "post_code", "") ?>,
-                                                        <?= read_key_array($web_card_content, "address", "") ?>,
-                                                        <?= read_key_array($web_card_content, "city", "") ?>,
-                                                        <?= read_key_array($web_card_content, "state", "") ?>,
-                                                        <?= read_key_array($web_card_content, "country", "") ?></span>
+                                                    <span class="text-start"><?= get_address_web_card($web_card_content) ?></span>
                                                 </div>
                                             </div>
                                         </a>
@@ -203,9 +200,10 @@ if (array_key_exists("identifier", $qrcode)) {
                     </div>
                 </div>
                 <?php include_once './includes/web_card/sharing_buttons.php'; ?>
-            <?php } else {
-                echo 'Disabled link';
-            }
+            <?php } else { ?>
+                <h1 class="position-absolute top-0 bottom-0 align-items-center d-flex">El link se encuentra inactivo</h1>
+            <?php
+                }
             ?>
         </section>
     <?php } else { ?>

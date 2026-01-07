@@ -176,3 +176,18 @@ function get_logo($company, $size) {
 function get_country_code_from_number($number, $codeLength) {
 	return substr($number, 0, $codeLength);
 }
+
+function get_address_web_card($data) {
+	$location_keys = ["post_code", "address", "city", "state", "country"];
+	$address = "";
+	foreach($location_keys as $key){
+		$value = read_key_array($data, $key, "");
+		if(!empty($value)){
+			if(!empty($address)){
+				$address .= ", ";
+			}
+			$address .= $value;
+		}
+	}
+	return $address;
+}

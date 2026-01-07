@@ -3,3 +3,5 @@
 .idea
 .DS_Store
 src/saved_qrcode
+
+/vendor/
