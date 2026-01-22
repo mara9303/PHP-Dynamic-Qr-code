@@ -102,6 +102,12 @@
           </ul>
         </li>
         <li class="nav-item">
+          <a href="./logos_crud.php" <?php echo ((substr(CURRENT_PAGE, 0, 14) == 'logos_crud.php') || (substr(CURRENT_PAGE, 0, 13) == 'logo_crud.php')) ? ' class="nav-link active"' : ' class="nav-link"'; ?>>
+            <i class="fas fa-image nav-icon"></i>
+            <p>Logos</p>
+          </a>
+        </li>
+        <li class="nav-item">
           <a href="./users.php" <?php echo ((substr(CURRENT_PAGE, 0, 15) == 'users.php') || (substr(CURRENT_PAGE, 0, 14) == 'user.php')) ? ' class="nav-link active"' : ' class="nav-link"'; ?>>
             <i class="fas fa-users nav-icon"></i>
             <p>Users</p>

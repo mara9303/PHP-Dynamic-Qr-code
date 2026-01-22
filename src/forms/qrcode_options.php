@@ -32,12 +32,6 @@
                 <option value="1000">1000</option>
             </select>
         </div>
-        <!--<div class="col">
-            <div class="form-group pt-4">
-                <label for="logo">Logo</label>
-                <?php include 'logo.php' ?>
-            </div>
-        </div>-->
     </div>
 </div>
 
@@ -70,14 +64,20 @@
             <label for="logo">Logo</label>
             <select name="logo" class="form-control">
                 <option value="">Sin logo</option>
-                <option value="prodex">PRODEX</option>
-                <option value="proplax">PROPLAX</option>
+                <?php
+                require_once BASE_PATH . '/lib/Logo/Logo.php';
+                $logoInstance = new Logo();
+                $logos = $logoInstance->getAllLogos();
+                foreach ($logos as $logoItem) {
+                    ?>
+                    <option value="<?php echo $logoItem['id']; ?>"><?php echo htmlspecialchars($logoItem['name']); ?></option>
+                <?php } ?>
             </select>
         </div>
     </div>
 </div>
 
-<?php if ($_SESSION['type'] === 'super') { ?>
+<?php if (isset($_SESSION['type']) && $_SESSION['type'] === 'super') { ?>
     <div class="col-sm-12 mb-2">
         <div class="row">
             <div class="col-sm-4">
@@ -101,6 +101,6 @@
         </div>
     </div>
 <?php } else { ?>
-    <input type="hidden" name="id_owner" value="<?php echo $_SESSION["user_id"]; ?>" />
+    <input type="hidden" name="id_owner" value="<?php echo isset($_SESSION['user_id']) ? $_SESSION['user_id'] : ''; ?>" />
 <?php } ?>
 <br>

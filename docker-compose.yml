@@ -5,7 +5,7 @@ services:
     restart: "unless-stopped"
     environment:
       TYPE: "docker"
-      BASE_URL: "https://mydomain.com"
+      BASE_URL: "http://localhost"
       DATABASE_HOST: "php-dynamic-qrcode-db"
       DATABASE_PORT: "3306"
       DATABASE_NAME: "qrcode"
@@ -19,11 +19,14 @@ services:
       - php-dynamic-qrcode-db
     volumes:
       - php_dynamic_qrcode_saved_qrcode_data:/var/www/html/saved_qrcode
+      - ./src:/var/www/html
     networks:
       - php-dynamic-qrcode-network
 
   php-dynamic-qrcode-db:
-    image: "giandonatoinverso/php-dynamic-qr-code-db:latest"
+    build:
+      context: .
+      dockerfile: Dockerfile.db
     restart: "unless-stopped"
     volumes:
       - php_dynamic_qrcode_db_data:/var/lib/mysql

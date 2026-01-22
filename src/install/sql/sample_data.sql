@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS `#prefix#dynamic_qrcodes` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_by` int(10) unsigned NOT NULL DEFAULT '0',
   `updated_at` timestamp NULL DEFAULT NULL,
+  `logo_company` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0 ;
 
@@ -59,6 +60,7 @@ CREATE TABLE IF NOT EXISTS `#prefix#static_qrcodes` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_by` int(10) unsigned NOT NULL DEFAULT '0',
   `updated_at` timestamp NULL DEFAULT NULL,
+  `logo_company` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
@@ -75,6 +77,39 @@ INSERT INTO `#prefix#static_qrcodes` (`id`, `id_owner`, `filename`, `format`, `t
 (10, 1, 'Free wifi', 'png', 'wifi', '<strong>Encryption:</strong> WPA<br><strong>SSID:</strong> TP-LINK-AB123<br><strong>Password:</strong> bBB8MR7TwbbUWMZT', 'Free wifi.png', 'enable', 0, '2020-08-24 09:02:35', 0, NULL),
 (11, 1, 'Pay here', 'png', 'paypal', '<div class="row"><div class="col-sm-4"><strong>Payment type:</strong> _click<br><strong>Email:</strong> paypal@domain.com<br><strong>Item name:</strong> T-shirt<br><strong>Item id:</strong> 177</div><div class="col-sm-4"><strong>Amount:</strong> 15<br><strong>Currency:</strong> USD<br><strong>Shipping:</strong> 4<br><strong>Tax rate:</strong> </div></div>', 'Pay here.png', 'enable', 0, '2020-08-24 09:04:13', 0, NULL),
 (12, 1, 'Send BTC', 'jpg', 'bitcoin', '<strong>BTC address:</strong> 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa<br><strong>Amount:</strong> 1<br><strong>Label:</strong> <br><strong>Message:</strong> ', 'Send BTC .jpg', 'enable', 0, '2020-09-01 10:51:08', 0, NULL);
+
+CREATE TABLE `#prefix#web_card_qrcodes` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `id_owner` int(25) DEFAULT NULL,
+  `filename` varchar(45) NOT NULL,
+  `format` varchar(45) DEFAULT NULL,
+  `identifier` longtext DEFAULT NULL,
+  `content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`content`)),
+  `qrcode` varchar(60) DEFAULT NULL,
+  `scan` int(11) NOT NULL DEFAULT 0,
+  `state` varchar(20) NOT NULL DEFAULT 'enable',
+  `created_by` int(10) unsigned NOT NULL DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_by` int(10) unsigned NOT NULL DEFAULT 0,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `logo_company` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+CREATE TABLE IF NOT EXISTS `#prefix#logos` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `filename` varchar(255) NOT NULL,
+  `original_filename` varchar(255) NOT NULL,
+  `width` int(11) NOT NULL DEFAULT 600,
+  `height` int(11) NOT NULL DEFAULT 193,
+  `state` varchar(20) NOT NULL DEFAULT 'enable',
+  `created_by` int(10) unsigned NOT NULL DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_by` int(10) unsigned NOT NULL DEFAULT 0,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

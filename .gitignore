@@ -4,4 +4,5 @@
 .DS_Store
 src/saved_qrcode
 
-/vendor/
+src/vendor/
+src/dist/img/*
