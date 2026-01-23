@@ -44,11 +44,6 @@
         </div>
     </div>-->
 
-<!-- Its use is not recommended. Read the documentation
-    <div class="form-group">
-        <label for="logo">Logo</label>
-        <?php include 'logo.php' ?>
-    </div>-->
 
     
     <div class="col-sm-4">

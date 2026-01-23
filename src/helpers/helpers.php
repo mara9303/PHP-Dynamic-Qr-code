@@ -152,27 +152,67 @@ function read_key_array($data, $key, $default) {
 	return array_key_exists($key, $data) && !empty($data[$key]) ? $data[$key] : $default;
 }
 
-function get_logo($company, $size) {
+function get_logo($logoId, $size) {
 	$logo = "";
-	if(isset($company) && !empty($company)){
-		$image = match (true){
-			$size == 100 => "$company-100.png",
-			$size == 200 => "$company-200.png",
-			$size == 300 => "$company-300.png",
-			$size == 400 => "$company-400.png",
-			$size == 500 => "$company-500.png",
-			$size == 600 => "$company-600.png",
-			$size == 700 => "$company-700.png",
-			$size == 800 => "$company-800.png",
-			$size == 900 => "$company-900.png",
-			$size == 1000 => "$company-1000.png",
-			default => "$company-500.png"
-		};
-		$logo = LOGOS_PATH.$image;
+	if (isset($logoId) && !empty($logoId) && is_numeric($logoId)) {
+		$logoData = get_logo_from_db((int)$logoId);
+		if ($logoData) {
+			$logo = LOGOS_PATH . $logoData['filename'];
+		}
 	}
 	return $logo;
 }
 
+function get_logo_path($logoId, $size) {
+	$logoPath = "";
+	if (isset($logoId) && !empty($logoId) && is_numeric($logoId)) {
+		$logoData = get_logo_from_db((int)$logoId);
+		if ($logoData) {
+			$logoPath = LOGOS_DIRECTORY . $logoData['filename'];
+		}
+	}
+	return $logoPath;
+}
+
+function get_logo_from_db($logoId) {
+	static $cache = [];
+	
+	if (isset($cache[$logoId])) {
+		return $cache[$logoId];
+	}
+	
+	$db = getDbInstance();
+	$db->where('id', $logoId);
+	$db->where('state', 'enable');
+	$result = $db->getOne('logos');
+	
+	$cache[$logoId] = $result;
+	return $result;
+}
+
+function get_logo_name_by_id($logoId) {
+	if (empty($logoId) || !is_numeric($logoId)) {
+		return '';
+	}
+	$logoData = get_logo_from_db((int)$logoId);
+	return $logoData ? $logoData['name'] : '';
+}
+
 function get_country_code_from_number($number, $codeLength) {
 	return substr($number, 0, $codeLength);
+}
+
+function get_address_web_card($data) {
+	$location_keys = ["post_code", "address", "city", "state", "country"];
+	$address = "";
+	foreach($location_keys as $key){
+		$value = read_key_array($data, $key, "");
+		if(!empty($value)){
+			if(!empty($address)){
+				$address .= ", ";
+			}
+			$address .= $value;
+		}
+	}
+	return $address;
 }

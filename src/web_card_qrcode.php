@@ -18,9 +18,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["del_id"])) {
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["edit"])) {
     if (
-        isset($_POST["identifier"]) &&
+        //isset($_POST["identifier"]) &&
         isset($_POST["filename"]) &&
-        isset($_POST["state"]) &&
         isset($_POST["id_owner"]) &&
         isset($_POST["id"]) &&
         isset($_POST['full_name']) && !empty($_POST['full_name']) &&
@@ -35,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["edit"])) {
         isset($_POST['address']) &&
         isset($_POST['city']) &&
         isset($_POST['post_code']) &&
-        isset($_POST['state']) &&
+        isset($_POST['location_state']) &&
         isset($_POST['country'])
     ){
         $web_card_qrcode_instance->editQrcode($_POST);
@@ -65,7 +64,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && !isset($_POST["edit"])) {
         isset($_POST['address']) &&
         isset($_POST['city']) &&
         isset($_POST['post_code']) &&
-        isset($_POST['state']) &&
+        isset($_POST['location_state']) &&
         isset($_POST['country'])
     ){
         $web_card_qrcode_instance->addQrcode($_POST);

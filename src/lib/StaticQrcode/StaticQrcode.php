@@ -1,4 +1,5 @@
 <?php
+
 require_once 'config/config.php';
 require_once BASE_PATH . '/lib/ICS/ICS.php';
 require_once BASE_PATH . '/lib/vCard/vCard.php';

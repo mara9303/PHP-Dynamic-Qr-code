@@ -63,6 +63,7 @@ class Qrcode {
         $background = substr($input_data['background'], 1);
 
         $logo = get_logo($input_data['logo'], $size);
+        $logoPath = get_logo_path($input_data['logo'], $size);
         
         return array(
             "errorCorrectionLevel" => $errorCorrectionLevel,
@@ -70,6 +71,7 @@ class Qrcode {
             "foreground" => $foreground,
             "background" => $background,
             "optionlogo" => $logo,
+            "optionlogopath" => $logoPath,
         );
     }
     
@@ -104,9 +106,9 @@ class Qrcode {
                 $this->failure($e->getMessage());
             }
             
-            // If you want you can customi<e qr code with logo
-            if(!empty($options['optionlogo'])){
-                $this->addLogo($data_to_db['qrcode'], $options['optionlogo']);
+            // If you want you can customize qr code with logo
+            if(!empty($options['optionlogopath'])){
+                $this->addLogo($data_to_db['qrcode'], $options['optionlogopath']);
             }
               
             $db = getDbInstance();
@@ -132,26 +134,33 @@ class Qrcode {
         $old_qrcode = $this->getQrcode($input_data["id"]);
 
         $data_to_db['qrcode'] = $data_to_db['filename'].'.'.$old_qrcode["format"];
+        
+        $hasLogo = !empty($old_qrcode["logo_company"]);
+        $baseDir = $hasLogo ? SAVED_QRCODE_DIRECTORY_LOGO : SAVED_QRCODE_DIRECTORY;
+        
+        $oldFilePath = $baseDir.$old_qrcode["qrcode"];
+        $newFilePath = $baseDir.$data_to_db['filename'].'.'.$old_qrcode["format"];
+        $oldFilename = isset($input_data["old_filename"]) ? $input_data["old_filename"] : '';
+        $filenameChanged = $data_to_db['filename'] !== $oldFilename;
 
-        if(!file_exists(SAVED_QRCODE_DIRECTORY.$data_to_db['filename'].'.'.$old_qrcode["format"]) || $data_to_db['filename'] == $input_data["old_filename"]){
-            $db->where('id', $input_data["id"]);
-            $stat = $db->update($this->table, $data_to_db);
-            
-            try{
-                rename(SAVED_QRCODE_DIRECTORY.$old_qrcode["qrcode"], SAVED_QRCODE_DIRECTORY.$data_to_db['filename'].'.'.$old_qrcode["format"]);
-            }
-            catch(Exception $e){
-                $this->failure($e->getMessage());
+        if($filenameChanged && file_exists($newFilePath)){
+            $this->failure('You cannot edit a qr code with an existing name on the server!');
+        }
+
+        $db->where('id', $input_data["id"]);
+        $stat = $db->update($this->table, $data_to_db);
+        
+        if ($filenameChanged && file_exists($oldFilePath)) {
+            if (!@rename($oldFilePath, $newFilePath)) {
+                $this->failure('Failed to rename QR code file');
             }
         }
-        else
-            $this->failure('You cannot edit a qr code with an existing name on the server!');
         
         if ($stat){
             $this->success('Qr code updated successfully!');
         }
         else {
-            $this->failure('Insert failed: ' . $db->getLastError());
+            $this->failure('Update failed: ' . $db->getLastError());
         }
     }
 
@@ -201,12 +210,12 @@ class Qrcode {
 	            $logo_height = imagesy($logo);
 	
 	            // Scale logo to fit in the QR Code
-	            $logo_qr_width = (int)$QR_width/1.8;
+	            $logo_qr_width = (int)($QR_width/1.8);
 	            $scale = $logo_width/$logo_qr_width;
-	            $logo_qr_height = (int)$logo_height/$scale;
+	            $logo_qr_height = (int)($logo_height/$scale);
 	            
 	            // You can try also with imagecopymerge() with same arguments
-	            imagecopyresampled($QR, $logo, (int)($QR_width/4.5), (int)($QR_height/2.4), 0, 0, $logo_qr_width, $logo_qr_height, $logo_width, $logo_height);
+	            imagecopyresampled($QR, $logo, (int)($QR_width/4.5), (int)($QR_height/2.4), 0, 0, (int)$logo_qr_width, (int)$logo_qr_height, $logo_width, $logo_height);
 	    
             
 	            /*$QR_width = imagesx($QR);
@@ -238,7 +247,6 @@ class Qrcode {
                     mkdir($dirQrLogo);
                 }
 	            $output = "$dirQrLogo/".$src;
-	            header('Content-Type: image/png'); 
 	            imagepng($QR , $output); 
                 imagedestroy($QR);
             }

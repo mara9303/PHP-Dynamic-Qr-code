@@ -31,6 +31,7 @@ define('READ_WEB_CARD_PATH', base_url().'/read_web_card.php?id=');
 //LOGO_QR
 define('LOGO_QR', base_url().'/dist/img/prueba-2.png');
 define('LOGOS_PATH', base_url().'/dist/img/');
+define('LOGOS_DIRECTORY', BASE_PATH.'/dist/img/');
 
 //QR LEVEL
 define('QR_LEVEL', 'H');

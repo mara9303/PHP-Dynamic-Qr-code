@@ -5,6 +5,13 @@ require_once 'includes/auth_validate.php';
 
 $db = getDbInstance();
 
+//Get Web Card qr code rows
+if ($_SESSION['type'] !== 'super') {
+    $db->where("id_owner", $_SESSION['user_id']);
+    $db->orWhere("id_owner", NULL, 'IS');
+}
+$numQrcode_webcard = $db->getValue("web_card_qrcodes", "count(*)");
+
 //Get Dynamic qr code rows
 if ($_SESSION['type'] !== 'super') {
     $db->where("id_owner", $_SESSION['user_id']);
@@ -19,7 +26,7 @@ if ($_SESSION['type'] !== 'super') {
 }
 $numQrcode_static = $db->getValue("static_qrcodes", "count(*)");
 
-$total = $numQrcode_dynamic + $numQrcode_static;
+$total = $numQrcode_webcard + $numQrcode_dynamic + $numQrcode_static;
 
 //Get Total scan
 if ($_SESSION['type'] !== 'super') {
@@ -28,8 +35,58 @@ if ($_SESSION['type'] !== 'super') {
 }
 $numScan = $db->getOne("dynamic_qrcodes", "sum(scan) as numScan");
 
+//Get Total scan
+if ($_SESSION['type'] !== 'super') {
+    $db->where("id_owner", $_SESSION['user_id']);
+    $db->orWhere("id_owner", NULL, 'IS');
+}
+$numScan = $db->getOne("web_card_qrcodes", "sum(scan) as numScan");
+
 /* CREATED CHART */
 //I initialize the variables that will contain the daily values to 0 otherwise in the foreach loop they will be reset every time
+
+//Get the number of WEB CARDS qr code created in 7 days and total scan
+if ($_SESSION['type'] !== 'super')
+    $createdQrcode_web_card = $db->query("select `created_at`, `scan` from " . DATABASE_PREFIX . "web_card_qrcodes where `created_at` > curdate()-7 AND (`id_owner`= " . $_SESSION['user_id'] . " OR `id_owner` IS NULL);");
+else
+    $createdQrcode_web_card = $db->query("select `created_at`, `scan` from " . DATABASE_PREFIX . "web_card_qrcodes where `created_at` > curdate()-7;");
+
+
+$web_card_today = $web_card_oneday = $web_card_twoday = $web_card_threeday = $web_card_fourday = $web_card_fiveday = $web_card_sixday = 0;
+$scan_today = $scan_oneday = $scan_twoday = $scan_threeday = $scan_fourday = $scan_fiveday = $scan_sixday = 0;
+foreach ($createdQrcode_web_card as $row) {
+    switch (substr($row['created_at'], 0, 10)) {
+        case date("Y-m-d", mktime(0, 0, 0, date('m'), date('d'), date('Y'))):
+            $web_card_today++;
+            $scan_today = $scan_today + $row['scan'];
+            break;
+        case date("Y-m-d", mktime(0, 0, 0, date('m'), date('d') - 1, date('Y'))):
+            $web_card_oneday++;
+            $scan_oneday = $scan_oneday + $row['scan'];
+            break;
+        case date("Y-m-d", mktime(0, 0, 0, date('m'), date('d') - 2, date('Y'))):
+            $web_card_twoday++;
+            $scan_twoday = $scan_twoday + $row['scan'];
+            break;
+        case date("Y-m-d", mktime(0, 0, 0, date('m'), date('d') - 3, date('Y'))):
+            $web_card_threeday++;
+            $scan_threeday = $scan_threeday + $row['scan'];
+            break;
+        case date("Y-m-d", mktime(0, 0, 0, date('m'), date('d') - 4, date('Y'))):
+            $web_card_fourday++;
+            $scan_fourday = $scan_fourday + $row['scan'];
+            break;
+        case date("Y-m-d", mktime(0, 0, 0, date('m'), date('d') - 5, date('Y'))):
+            $web_card_fiveday++;
+            $scan_fiveday = $scan_fiveday + $row['scan'];
+            break;
+        case date("Y-m-d", mktime(0, 0, 0, date('m'), date('d') - 6, date('Y'))):
+            $web_card_sixday++;
+            $scan_sixday = $scan_sixday + $row['scan'];
+            break;
+        //I increase the daily variable and update the variable of the number of scans for a given day
+    }
+}
 
 //Get the number of DYNAMIC qr code created in 7 days and total scan
 if ($_SESSION['type'] !== 'super')
@@ -39,36 +96,36 @@ else
 
 
 $dynamic_today = $dynamic_oneday = $dynamic_twoday = $dynamic_threeday = $dynamic_fourday = $dynamic_fiveday = $dynamic_sixday = 0;
-$scan_today = $scan_oneday = $scan_twoday = $scan_threeday = $scan_fourday = $scan_fiveday = $scan_sixday = 0;
+//$scan_today = $scan_oneday = $scan_twoday = $scan_threeday = $scan_fourday = $scan_fiveday = $scan_sixday = 0;
 foreach ($createdQrcode_dynamic as $row) {
     switch (substr($row['created_at'], 0, 10)) {
         case date("Y-m-d", mktime(0, 0, 0, date('m'), date('d'), date('Y'))):
             $dynamic_today++;
-            $scan_today = $scan_today + $row['scan'];
+            $scan_today += $scan_today + $row['scan'];
             break;
         case date("Y-m-d", mktime(0, 0, 0, date('m'), date('d') - 1, date('Y'))):
             $dynamic_oneday++;
-            $scan_oneday = $scan_oneday + $row['scan'];
+            $scan_oneday += $scan_oneday + $row['scan'];
             break;
         case date("Y-m-d", mktime(0, 0, 0, date('m'), date('d') - 2, date('Y'))):
             $dynamic_twoday++;
-            $scan_twoday = $scan_twoday + $row['scan'];
+            $scan_twoday += $scan_twoday + $row['scan'];
             break;
         case date("Y-m-d", mktime(0, 0, 0, date('m'), date('d') - 3, date('Y'))):
             $dynamic_threeday++;
-            $scan_threeday = $scan_threeday + $row['scan'];
+            $scan_threeday += $scan_threeday + $row['scan'];
             break;
         case date("Y-m-d", mktime(0, 0, 0, date('m'), date('d') - 4, date('Y'))):
             $dynamic_fourday++;
-            $scan_fourday = $scan_fourday + $row['scan'];
+            $scan_fourday += $scan_fourday + $row['scan'];
             break;
         case date("Y-m-d", mktime(0, 0, 0, date('m'), date('d') - 5, date('Y'))):
             $dynamic_fiveday++;
-            $scan_fiveday = $scan_fiveday + $row['scan'];
+            $scan_fiveday += $scan_fiveday + $row['scan'];
             break;
         case date("Y-m-d", mktime(0, 0, 0, date('m'), date('d') - 6, date('Y'))):
             $dynamic_sixday++;
-            $scan_sixday = $scan_sixday + $row['scan'];
+            $scan_sixday += $scan_sixday + $row['scan'];
             break;
         //I increase the daily variable and update the variable of the number of scans for a given day
     }
@@ -156,7 +213,7 @@ foreach ($createdQrcode_static as $row) {
 
                                 <div class="info-box-content">
                                     <span class="info-box-text">Total qr codes</span>
-                                    <span class="info-box-number"><?php echo $total; ?></span>
+                                    <span class="info-box-number"><?= $total; ?></span>
                                 </div><!-- /.info-box-content -->
                             </div>
                         </div><!-- /.col -->
@@ -167,7 +224,7 @@ foreach ($createdQrcode_static as $row) {
 
                                 <div class="info-box-content">
                                     <span class="info-box-text">Dynamic Qr codes</span>
-                                    <span class="info-box-number"><?php echo $numQrcode_dynamic; ?></span>
+                                    <span class="info-box-number"><?= $numQrcode_dynamic; ?></span>
                                 </div><!-- /.info-box-content -->
                             </div>
                         </div><!-- /.col -->
@@ -181,7 +238,22 @@ foreach ($createdQrcode_static as $row) {
 
                                 <div class="info-box-content">
                                     <span class="info-box-text">Static QR codes</span>
-                                    <span class="info-box-number"><?php echo $numQrcode_static; ?></span>
+                                    <span class="info-box-number"><?= $numQrcode_static; ?></span>
+                                </div><!-- /.info-box-content -->
+
+                            </div>
+                        </div><!-- /.col -->
+
+                        <!-- fix for small devices only -->
+                        <div class="clearfix hidden-md-up"></div>
+
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <div class="info-box mb-3 bg-gradient-navy">
+                                <span class="info-box-icon"><i class="fa fa-qrcode"></i></span>
+
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Web Card QR codes</span>
+                                    <span class="info-box-number"><?= $numQrcode_webcard; ?></span>
                                 </div><!-- /.info-box-content -->
 
                             </div>
@@ -193,7 +265,7 @@ foreach ($createdQrcode_static as $row) {
 
                                 <div class="info-box-content">
                                     <span class="info-box-text">Total Scans</span>
-                                    <span class="info-box-number"><?php echo $numScan["numScan"]; ?></span>
+                                    <span class="info-box-number"><?= $numScan["numScan"]; ?></span>
                                 </div><!-- /.info-box-content -->
                             </div>
                         </div><!-- /.col -->
@@ -219,7 +291,7 @@ foreach ($createdQrcode_static as $row) {
                                     <div class="d-flex">
                                         <p class="d-flex flex-column">
                                             <span
-                                                class="text-bold text-lg"><?php echo $dynamic_today + $dynamic_oneday + $dynamic_twoday + $dynamic_threeday + $dynamic_fourday + $dynamic_fiveday + $dynamic_sixday + $static_today + $static_oneday + $static_twoday + $static_threeday + $static_fourday + $static_fiveday + $static_sixday ?></span>
+                                                class="text-bold text-lg"><?= $dynamic_today + $dynamic_oneday + $dynamic_twoday + $dynamic_threeday + $dynamic_fourday + $dynamic_fiveday + $dynamic_sixday + $static_today + $static_oneday + $static_twoday + $static_threeday + $static_fourday + $static_fiveday + $static_sixday ?></span>
                                             <span>Total qr code created</span>
                                         </p>
                                     </div>
@@ -241,11 +313,15 @@ foreach ($createdQrcode_static as $row) {
 
                                     <div class="d-flex flex-row justify-content-end">
                                         <span class="mr-2">
-                                            <i class="fas fa-square text-primary"></i> Dynamic
+                                            <i class="fas fa-square text-success"></i> Dynamic
+                                        </span>
+
+                                        <span class="mr-2">
+                                            <i class="fas fa-square text-danger"></i> Static
                                         </span>
 
                                         <span>
-                                            <i class="fas fa-square text-gray"></i> Static
+                                            <i class="fas fa-square text-navy"></i> Static
                                         </span>
                                     </div>
                                 </div><!-- /.card-body -->
@@ -307,48 +383,66 @@ foreach ($createdQrcode_static as $row) {
                 var createdChart = new Chart($createdChart, {
                     data: {
                         labels: [
-                            '<?php echo date("Y-m-d", mktime(0, 0, 0, date('m'), date('d') - 6, date('Y'))); ?>',
-                            '<?php echo date("Y-m-d", mktime(0, 0, 0, date('m'), date('d') - 5, date('Y'))); ?>',
-                            '<?php echo date("Y-m-d", mktime(0, 0, 0, date('m'), date('d') - 4, date('Y'))); ?>',
-                            '<?php echo date("Y-m-d", mktime(0, 0, 0, date('m'), date('d') - 3, date('Y'))); ?>',
-                            '<?php echo date("Y-m-d", mktime(0, 0, 0, date('m'), date('d') - 2, date('Y'))); ?>',
-                            '<?php echo date("Y-m-d", mktime(0, 0, 0, date('m'), date('d') - 1, date('Y'))); ?>',
-                            '<?php echo date("Y-m-d", mktime(0, 0, 0, date('m'), date('d'), date('Y'))); ?>'
+                            '<?= date("Y-m-d", mktime(0, 0, 0, date('m'), date('d') - 6, date('Y'))); ?>',
+                            '<?= date("Y-m-d", mktime(0, 0, 0, date('m'), date('d') - 5, date('Y'))); ?>',
+                            '<?= date("Y-m-d", mktime(0, 0, 0, date('m'), date('d') - 4, date('Y'))); ?>',
+                            '<?= date("Y-m-d", mktime(0, 0, 0, date('m'), date('d') - 3, date('Y'))); ?>',
+                            '<?= date("Y-m-d", mktime(0, 0, 0, date('m'), date('d') - 2, date('Y'))); ?>',
+                            '<?= date("Y-m-d", mktime(0, 0, 0, date('m'), date('d') - 1, date('Y'))); ?>',
+                            '<?= date("Y-m-d", mktime(0, 0, 0, date('m'), date('d'), date('Y'))); ?>'
                         ],
                         datasets: [{
                             type: 'line',
                             data: [
-                                <?php echo $dynamic_sixday ?>,
-                                <?php echo $dynamic_fiveday ?>,
-                                <?php echo $dynamic_fourday ?>,
-                                <?php echo $dynamic_threeday ?>,
-                                <?php echo $dynamic_twoday ?>,
-                                <?php echo $dynamic_oneday ?>,
-                                <?php echo $dynamic_today ?>,
+                                <?= $dynamic_sixday ?>,
+                                <?= $dynamic_fiveday ?>,
+                                <?= $dynamic_fourday ?>,
+                                <?= $dynamic_threeday ?>,
+                                <?= $dynamic_twoday ?>,
+                                <?= $dynamic_oneday ?>,
+                                <?= $dynamic_today ?>,
 
                             ],
                             backgroundColor: 'transparent',
-                            borderColor: '#007bff',
-                            pointBorderColor: '#007bff',
-                            pointBackgroundColor: '#007bff',
+                            borderColor: '#28a745',
+                            pointBorderColor: '#28a745',
+                            pointBackgroundColor: '#28a745',
                             fill: false
                         },
                         {
                             type: 'line',
                             data: [
-                                <?php echo $static_sixday ?>,
-                                <?php echo $static_fiveday ?>,
-                                <?php echo $static_fourday ?>,
-                                <?php echo $static_threeday ?>,
-                                <?php echo $static_twoday ?>,
-                                <?php echo $static_oneday ?>,
-                                <?php echo $static_today ?>,
+                                <?= $static_sixday ?>,
+                                <?= $static_fiveday ?>,
+                                <?= $static_fourday ?>,
+                                <?= $static_threeday ?>,
+                                <?= $static_twoday ?>,
+                                <?= $static_oneday ?>,
+                                <?= $static_today ?>,
 
                             ],
                             backgroundColor: 'tansparent',
-                            borderColor: '#ced4da',
-                            pointBorderColor: '#ced4da',
-                            pointBackgroundColor: '#ced4da',
+                            borderColor: '#dc3545',
+                            pointBorderColor: '#dc3545',
+                            pointBackgroundColor: '#dc3545',
+                            fill: false
+                        },
+                        {
+                            type: 'line',
+                            data: [
+                                <?= $web_card_sixday ?>,
+                                <?= $web_card_fiveday ?>,
+                                <?= $web_card_fourday ?>,
+                                <?= $web_card_threeday ?>,
+                                <?= $web_card_twoday ?>,
+                                <?= $web_card_oneday ?>,
+                                <?= $web_card_today ?>,
+
+                            ],
+                            backgroundColor: 'tansparent',
+                            borderColor: '#001f3f',
+                            pointBorderColor: '#001f3f',
+                            pointBackgroundColor: '#001f3f',
                             fill: false
                         }]
                     },
@@ -409,13 +503,13 @@ foreach ($createdQrcode_static as $row) {
 
                 var salesGraphChartData = {
                     labels: [
-                        '<?php echo date("Y-m-d", mktime(0, 0, 0, date('m'), date('d') - 6, date('Y'))); ?>',
-                        '<?php echo date("Y-m-d", mktime(0, 0, 0, date('m'), date('d') - 5, date('Y'))); ?>',
-                        '<?php echo date("Y-m-d", mktime(0, 0, 0, date('m'), date('d') - 4, date('Y'))); ?>',
-                        '<?php echo date("Y-m-d", mktime(0, 0, 0, date('m'), date('d') - 3, date('Y'))); ?>',
-                        '<?php echo date("Y-m-d", mktime(0, 0, 0, date('m'), date('d') - 2, date('Y'))); ?>',
-                        '<?php echo date("Y-m-d", mktime(0, 0, 0, date('m'), date('d') - 1, date('Y'))); ?>',
-                        '<?php echo date("Y-m-d", mktime(0, 0, 0, date('m'), date('d'), date('Y'))); ?>'
+                        '<?= date("Y-m-d", mktime(0, 0, 0, date('m'), date('d') - 6, date('Y'))); ?>',
+                        '<?= date("Y-m-d", mktime(0, 0, 0, date('m'), date('d') - 5, date('Y'))); ?>',
+                        '<?= date("Y-m-d", mktime(0, 0, 0, date('m'), date('d') - 4, date('Y'))); ?>',
+                        '<?= date("Y-m-d", mktime(0, 0, 0, date('m'), date('d') - 3, date('Y'))); ?>',
+                        '<?= date("Y-m-d", mktime(0, 0, 0, date('m'), date('d') - 2, date('Y'))); ?>',
+                        '<?= date("Y-m-d", mktime(0, 0, 0, date('m'), date('d') - 1, date('Y'))); ?>',
+                        '<?= date("Y-m-d", mktime(0, 0, 0, date('m'), date('d'), date('Y'))); ?>'
                     ],
                     datasets: [
                         {
@@ -430,13 +524,13 @@ foreach ($createdQrcode_static as $row) {
                             pointColor: '#efefef',
                             pointBackgroundColor: '#efefef',
                             data: [
-                                <?php echo $scan_sixday ?>,
-                                <?php echo $scan_fiveday ?>,
-                                <?php echo $scan_fourday ?>,
-                                <?php echo $scan_threeday ?>,
-                                <?php echo $scan_twoday ?>,
-                                <?php echo $scan_oneday ?>,
-                                <?php echo $scan_today ?>,
+                                <?= $scan_sixday ?>,
+                                <?= $scan_fiveday ?>,
+                                <?= $scan_fourday ?>,
+                                <?= $scan_threeday ?>,
+                                <?= $scan_twoday ?>,
+                                <?= $scan_oneday ?>,
+                                <?= $scan_today ?>,
 
                             ],
                         }

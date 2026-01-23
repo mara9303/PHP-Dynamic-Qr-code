@@ -1,0 +1,15 @@
+FROM mysql:8.0
+
+# Copiar el script SQL con extensión .sql.template para que MySQL NO lo ejecute automáticamente
+COPY src/install/sql/sample_data.sql /docker-entrypoint-initdb.d/sample_data.sql.template
+
+# Copiar el script de inicialización que procesa el prefijo
+COPY docker/init-db.sh /docker-entrypoint-initdb.d/init-db.sh
+RUN chmod +x /docker-entrypoint-initdb.d/init-db.sh
+
+# Variables de entorno por defecto
+ENV MYSQL_DATABASE=qrcode
+ENV MYSQL_USER=qrcode
+ENV MYSQL_PASSWORD=changeme
+ENV MYSQL_ROOT_PASSWORD=changeme
+ENV DATABASE_PREFIX=""

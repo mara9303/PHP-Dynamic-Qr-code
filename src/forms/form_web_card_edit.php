@@ -120,7 +120,7 @@
             <div class="col-6 col-md-3">
                 <div class="form-group">
                     <label>State</label>
-                    <input type="text" name="state" value="<?= $edit ? $web_card_qrcode['state'] : ''; ?>" placeholder="" class="form-control">
+                    <input type="text" name="location_state" value="<?= $edit ? $web_card_qrcode['state'] : ''; ?>" placeholder="" class="form-control">
                 </div>
             </div>
 

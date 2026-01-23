@@ -1,4 +1,5 @@
 <?php
+
 require_once 'config/config.php';
 require_once BASE_PATH . '/lib/Qrcode/Qrcode.php';
 
@@ -64,7 +65,7 @@ class WebCardQrcode {
             "work_phone" => $_POST['work_phone_number'], "role" => $_POST['role'], 
             "note" => $_POST['note'], "photo" => $_POST['photo'], 
             "address" => $_POST['address'], "city" => $_POST['city'], "post_code" => $_POST['post_code'], 
-            "state" => $_POST['state'], "country" => $_POST['country']
+            "state" => $_POST['location_state'], "country" => $_POST['country']
         ]);
         $data_to_db['created_by'] = $_SESSION['user_id'];
         $data_to_db['format'] = $input_data['format'];
@@ -97,9 +98,9 @@ class WebCardQrcode {
             "work_phone" => $_POST['work_phone'], "role" => $_POST['role'], 
             "note" => $_POST['note'], "photo" => $_POST['photo'], 
             "address" => $_POST['address'], "city" => $_POST['city'], "post_code" => $_POST['post_code'], 
-            "state" => $_POST['state'], "country" => $_POST['country']
+            "state" => $_POST['location_state'], "country" => $_POST['country']
         ]);
-        $data_to_db['state'] = $input_data['state'];
+        //$data_to_db['state'] = $input_data['state'];
 
         $this->qrcode_instance->editQrcode($input_data, $data_to_db);
     }
