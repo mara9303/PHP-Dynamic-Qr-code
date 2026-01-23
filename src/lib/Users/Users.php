@@ -43,10 +43,7 @@ class Users
         $db->where('id', $id);
         $result = $db->getOne('users');
 
-        if($result !== NULL)
-            return $result;
-        else
-            $this->failure("User not found");
+        return $result; // Returns NULL if user doesn't exist
     }
     
     /**
