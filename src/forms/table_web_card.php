@@ -4,7 +4,7 @@
         <div class="bulk-action-wrapper">
             <form id="bulk-action" action="bulk_action.php" method="POST">
                 <button type="submit" class="btn btn-primary">Download selected</button>
-                <input type="hidden" name="type" value="dynamic">
+                <input type="hidden" name="type" value="web_card">
             </form>
         </div>
     </div>

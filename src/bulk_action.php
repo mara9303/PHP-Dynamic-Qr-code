@@ -28,21 +28,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     foreach ($params as $param) {
-        $row = $db->where('id', $param);
+        $db = getDbInstance();
+        $db->where('id', $param);
         $row = $db->getOne("{$type}_qrcodes");
-        @$files[] = SAVED_QRCODE_FOLDER . $row['qrcode'];
+        if ($row) {
+            $hasLogo = !empty($row['logo_company']);
+            $baseDir = $hasLogo ? SAVED_QRCODE_DIRECTORY_LOGO : SAVED_QRCODE_DIRECTORY;
+            $files[] = $baseDir . $row['qrcode'];
+        }
     }
 
     $zip = new ZipArchive();
     $uniqid = uniqid();
-    $relative_dir = SAVED_QRCODE_FOLDER. 'zip/qrcodes_'. $uniqid .'.zip';
-    @unlink($relative_dir);
+    $zipDir = SAVED_QRCODE_DIRECTORY . 'zip/';
+    if (!is_dir($zipDir)) {
+        mkdir($zipDir, 0755, true);
+    }
+    $zipPath = $zipDir . 'qrcodes_'. $uniqid .'.zip';
+    @unlink($zipPath);
     $url_path = SAVED_QRCODE_URL . 'zip/qrcodes_'. $uniqid .'.zip';
-    $zip->open($relative_dir, ZipArchive::CREATE);
+    $zip->open($zipPath, ZipArchive::CREATE);
 
     foreach ($files as $file) {
-        $download_file = @file_get_contents($file, true);
-        $zip->addFromString(basename($file), $download_file);
+        if (file_exists($file)) {
+            $zip->addFile($file, basename($file));
+        }
     }
 
     $zip->close();
