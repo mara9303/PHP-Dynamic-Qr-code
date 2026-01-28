@@ -12,6 +12,10 @@ RUN apt-get update
 RUN apt-get install -y --no-install-recommends libzip-dev libjpeg62-turbo-dev libpng-dev libfreetype6-dev
 
 RUN docker-php-source extract
+
+# Configure GD with JPEG and FreeType support
+RUN docker-php-ext-configure gd --with-jpeg --with-freetype
+
 RUN docker-php-ext-install pdo_mysql zip exif pcntl gd
 RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
 RUN docker-php-ext-install gettext && docker-php-ext-enable gettext

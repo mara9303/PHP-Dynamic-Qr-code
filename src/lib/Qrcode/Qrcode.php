@@ -192,16 +192,70 @@ class Qrcode {
     }
     
     /**
+     * Load image from file based on extension
+     * Returns GdImage or false if format not supported for GD manipulation
+     */
+    private function loadImage($path, $ext) {
+        switch ($ext) {
+            case 'png':
+                return @imagecreatefrompng($path);
+            case 'jpg':
+            case 'jpeg':
+                return @imagecreatefromjpeg($path);
+            case 'gif':
+                return @imagecreatefromgif($path);
+            case 'svg':
+            case 'eps':
+                // SVG and EPS are vector formats, cannot be manipulated with GD
+                return false;
+            default:
+                return false;
+        }
+    }
+    
+    /**
+     * Save GD image to file based on extension
+     */
+    private function saveImage($image, $path, $ext) {
+        switch ($ext) {
+            case 'png':
+                return imagepng($image, $path);
+            case 'jpg':
+            case 'jpeg':
+                return imagejpeg($image, $path, 90);
+            case 'gif':
+                return imagegif($image, $path);
+            default:
+                return imagepng($image, $path);
+        }
+    }
+    
+    /**
      * Add logo
      * IMPORTANT: I do not recommend to use this option because there may be problems with the scanning of the qr code as some readers may not recognize the code
+     * NOTE: SVG and EPS formats are not supported for logo overlay as they are vector formats
      */
     private function addLogo($src, $logo = 'none') {
         try
         {
             if($logo != 'none')
             {
-                $logo = imagecreatefrompng($logo);
-                $QR = imagecreatefrompng(SAVED_QRCODE_FOLDER.$src);
+                // Load logo based on its extension
+                $logoExt = strtolower(pathinfo($logo, PATHINFO_EXTENSION));
+                $logoImg = $this->loadImage($logo, $logoExt);
+                if (!$logoImg) {
+                    throw new Exception("Failed to load logo or unsupported format: $logoExt");
+                }
+                
+                // Load QR based on its extension
+                $qrPath = SAVED_QRCODE_DIRECTORY . $src;
+                $qrExt = strtolower(pathinfo($src, PATHINFO_EXTENSION));
+                $QR = $this->loadImage($qrPath, $qrExt);
+                if (!$QR) {
+                    throw new Exception("Failed to load QR or unsupported format: $qrExt (SVG/EPS not supported for logo overlay)");
+                }
+                
+                $logo = $logoImg;
 
                 $QR_width = imagesx($QR);
 	            $QR_height = imagesy($QR);
@@ -214,8 +268,24 @@ class Qrcode {
 	            $scale = $logo_width/$logo_qr_width;
 	            $logo_qr_height = (int)($logo_height/$scale);
 	            
-	            // You can try also with imagecopymerge() with same arguments
-	            imagecopyresampled($QR, $logo, (int)($QR_width/4.5), (int)($QR_height/2.4), 0, 0, (int)$logo_qr_width, (int)$logo_qr_height, $logo_width, $logo_height);
+	            // Calculate logo position
+	            $logo_x = (int)($QR_width/4.5);
+	            $logo_y = (int)($QR_height/2.4);
+	            
+	            // Draw white background rectangle behind logo for visibility
+	            $padding = 5; // Small padding around the logo
+	            $white = imagecolorallocate($QR, 255, 255, 255);
+	            imagefilledrectangle(
+	                $QR,
+	                $logo_x - $padding,
+	                $logo_y - $padding,
+	                $logo_x + (int)$logo_qr_width + $padding,
+	                $logo_y + (int)$logo_qr_height + $padding,
+	                $white
+	            );
+	            
+	            // Copy logo on top of white background
+	            imagecopyresampled($QR, $logo, $logo_x, $logo_y, 0, 0, (int)$logo_qr_width, (int)$logo_qr_height, $logo_width, $logo_height);
 	    
             
 	            /*$QR_width = imagesx($QR);
@@ -247,8 +317,11 @@ class Qrcode {
                     mkdir($dirQrLogo);
                 }
 	            $output = "$dirQrLogo/".$src;
-	            imagepng($QR , $output); 
-                imagedestroy($QR);
+	            
+	            // Save in the same format as the original QR
+	            $this->saveImage($QR, $output, $qrExt);
+	            // Note: imagedestroy() is deprecated since PHP 8.0 and has no effect
+	            // GD resources are now objects and freed automatically by garbage collector
             }
         }
         catch(Exception $e)
